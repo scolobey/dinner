@@ -11,8 +11,8 @@ def parse_recipes():
     with open("rec_magic.csv", 'r') as f:
         data = list(csv.reader(f, delimiter=","))
         recipes = []
-
-        for x in data[2:]:
+        data = data[1:]
+        for x in data:
             phrase_set = []
             for y in x[3:]:
                 phrase_set = phrase_set + (y[1:-1].split(","))
@@ -40,13 +40,17 @@ def parse_newest_recipes():
 
     with open("rec_recent_1000.csv", 'r') as f:
         data = list(csv.reader(f, delimiter=","))
+        data = data[1:] 
         recipes = []
 
-        for x in data[1:]:
+        for x in data:
             phrase_set = []
-            for y in x[3:]:
-                phrase_set = phrase_set + (y[1:-1].split(","))
+            clipped = x[3:]
             parsed_set = []
+            
+            for y in clipped:
+                phrase_set = phrase_set + (y[1:-1].split(","))
+            
             for z in phrase_set:
                 if z in phrase_key:
                     parsed_set.append(phrase_key[z])
@@ -59,6 +63,17 @@ def parse_newest_recipes():
             trainX[i][phrase] += 1
 
     return trainX
+
+def convert_to_id(id_set):
+    recipe_set = []
+    with open('rec_recent_1000.csv') as csvfile:
+        
+        reader = list(csv.reader(csvfile, delimiter=","))
+        reader = reader[1:]
+        for i, row in enumerate(reader):
+            if i in id_set:
+                recipe_set.append(row)
+    return recipe_set
 
 # accept an array containing arrays of integers with equal length and reserve every 10th entry as test data.
 def split(list):
