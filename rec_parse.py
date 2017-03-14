@@ -104,6 +104,36 @@ def parse_newest_recipes():
 
     return trainX
 
+def parse_chicken_recipes():
+    global phrase_key
+    global phrase_key_index
+
+    with open("1000_chicken_recipes.csv", 'r') as f:
+        data = list(csv.reader(f, delimiter=","))
+        data = data[1:]
+        recipes = []
+
+        for x in data:
+            phrase_set = []
+            clipped = x[3:]
+            parsed_set = []
+
+            for y in clipped:
+                phrase_set = phrase_set + (y[1:-1].split(","))
+
+            for z in phrase_set:
+                if z in phrase_key:
+                    parsed_set.append(phrase_key[z])
+            recipes.append(parsed_set)
+
+    trainX = np.zeros((len(data), phrase_key_index), dtype=np.int)
+
+    for i, rec in enumerate(recipes):
+        for j, phrase in enumerate(rec):
+            trainX[i][phrase] += 1
+
+    return trainX
+
 def convert_to_id(id_set):
     recipe_set = []
     with open('rec_recent_1000.csv') as csvfile:
